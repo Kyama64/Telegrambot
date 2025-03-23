@@ -34,7 +34,7 @@ def start_bot_thread():
     global bot_instance
     
     logger.info("Starting the Translation Service Bot")
-    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    token = os.getenv("TELEGRAM_BOT_TOKEN","7880135656:AAGzSy3FKl_AZd28Bvq1kC0pa9yeZWRxGu4")
     
     if not token:
         logger.error("No bot token provided. Set the TELEGRAM_BOT_TOKEN environment variable.")
