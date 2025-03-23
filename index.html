@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% block title %}Панель управления - Translation Service Bot{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Панель управления ботом @dolmecher</h4>
+            </div>
+            <div class="card-body">
+                <p class="lead">
+                    Телеграм-группа: <a href="https://t.me/{{ group_name }}" target="_blank">@{{ group_name }}</a>
+                </p>
+                <div class="alert alert-warning mb-3" id="botStatus">
+                    <strong>Статус бота:</strong> Бот не запущен
+                </div>
+                <button id="startBotBtn" class="btn btn-success">Запустить бота</button>
+                
+                <script>
+                    document.getElementById('startBotBtn').addEventListener('click', function() {
+                        this.disabled = true;
+                        this.innerHTML = 'Запуск бота...';
+                        
+                        fetch('/start-bot', {
+                            method: 'POST',
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                document.getElementById('botStatus').className = 'alert alert-success mb-3';
+                                document.getElementById('botStatus').innerHTML = '<strong>Статус бота:</strong> Бот успешно запущен';
+                            } else {
+                                document.getElementById('botStatus').innerHTML = '<strong>Статус бота:</strong> ' + data.message;
+                            }
+                            this.innerHTML = 'Запустить бота';
+                            this.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            document.getElementById('botStatus').className = 'alert alert-danger mb-3';
+                            document.getElementById('botStatus').innerHTML = '<strong>Ошибка:</strong> Не удалось запустить бота';
+                            this.innerHTML = 'Запустить бота';
+                            this.disabled = false;
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5>Статистика пользователей</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h1 class="display-4">{{ translator_count }}</h1>
+                                <p class="text-muted">Переводчиков</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h1 class="display-4">{{ client_count }}</h1>
+                                <p class="text-muted">Клиентов</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 mt-3">
+                    <a href="/translators" class="btn btn-outline-primary">Список переводчиков</a>
+                    <a href="/clients" class="btn btn-outline-primary">Список клиентов</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5>Функции бота</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group mb-3">
+                    <li class="list-group-item">
+                        <strong>✓</strong> Регистрация пользователей (клиенты и переводчики)
+                    </li>
+                    <li class="list-group-item">
+                        <strong>✓</strong> Управление сообщениями в группе
+                    </li>
+                    <li class="list-group-item">
+                        <strong>✓</strong> Проверка статуса клиентов
+                    </li>
+                    <li class="list-group-item">
+                        <strong>✓</strong> Фильтрация спама
+                    </li>
+                    <li class="list-group-item">
+                        <strong>✓</strong> Поддержка русского языка
+                    </li>
+                </ul>
+                <div class="alert alert-info mb-0">
+                    <strong>Совет:</strong> Используйте команду /admin_data в чате с ботом для получения детальной информации о пользователях.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
